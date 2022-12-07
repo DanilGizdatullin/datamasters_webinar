@@ -18,7 +18,7 @@ def get_paths(data_path: str) -> Tuple[List[str], List[str]]:
     paths = []
     class_labels = []
     for label in LABEL2IDX.keys():
-        label_paths = [os.path.join(label, item) for item in os.listdir(os.path.join(data_path, label))]
+        label_paths = [os.path.join(label, item) for item in os.listdir(os.path.join(data_path, label))][:300]
         paths.extend(label_paths)
         class_labels.extend([label] * len(label_paths))
     return paths, class_labels

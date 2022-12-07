@@ -1,6 +1,8 @@
 import os
 from argparse import ArgumentParser
 
+import mlflow
+import mlflow.keras
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint  # pylint: disable=E0611
 
 from config import AVAILABLE_MODELS, NUM_CLASSES
@@ -29,6 +31,9 @@ def main(batch_size: int, image_shape: int, model_type: str, epochs: int, data_p
 
 
 if __name__ == "__main__":
+    mlflow.set_tracking_uri("http://0.0.0.0:5000")
+    mlflow.set_experiment("mlflow_demo")
+    mlflow.keras.autolog()
     parser = ArgumentParser()
     parser.add_argument("--batch_size", dest="batch_size", help="Batch size", type=int)
     parser.add_argument("--image_shape", dest="image_shape", help="Model input image shape, integer", type=int)
@@ -40,4 +45,5 @@ if __name__ == "__main__":
                         default=1)
 
     args = parser.parse_args()
-    main(args.batch_size, args.image_shape, args.model_type, args.epochs, args.data_path, args.verbose)
+    with mlflow.start_run():
+        main(args.batch_size, args.image_shape, args.model_type, args.epochs, args.data_path, args.verbose)
